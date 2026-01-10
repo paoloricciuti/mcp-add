@@ -26,7 +26,7 @@
 	],
 	"author": "",
 	"license": "ISC",
-	"packageManager": "pnpm@10.21.0",
+	"packageManager": "pnpm@10.27.0",
 	"type": "module",
 	"dependencies": {
 		"@changesets/cli": "^2.29.8",
