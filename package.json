@@ -1,6 +1,6 @@
 {
 	"name": "mcp-add",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"description": "CLI tool to add MCP servers to various AI coding clients",
 	"main": "src/index.js",
 	"repository": {
