@@ -1,5 +1,11 @@
 # mcp-add
 
+## 0.2.1
+
+### Patch Changes
+
+- 2a43771: fix: claude code and add sse type
+
 ## 0.2.0
 
 ### Minor Changes
