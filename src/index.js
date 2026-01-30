@@ -157,7 +157,7 @@ async function main() {
 			message: 'What is the server name?',
 			placeholder: 'my-mcp-server',
 			validate: (value) => {
-				if (!value.trim()) return 'Server name is required';
+				if (!value || !value.trim()) return 'Server name is required';
 				if (!/^[a-zA-Z0-9_-]+$/.test(value)) {
 					return 'Server name can only contain letters, numbers, hyphens, and underscores';
 				}
@@ -220,7 +220,7 @@ async function main() {
 				message: 'What command should be run?',
 				placeholder: 'npx -y @modelcontextprotocol/server-filesystem /tmp',
 				validate: (value) => {
-					if (!value.trim()) return 'Command is required';
+					if (!value || !value.trim()) return 'Command is required';
 				},
 			});
 			if (is_cancel(command_input)) {
@@ -258,7 +258,7 @@ async function main() {
 				message: 'What is the server URL?',
 				placeholder: 'https://mcp.example.com/sse',
 				validate: (value) => {
-					if (!value.trim()) return 'URL is required';
+					if (!value || !value.trim()) return 'URL is required';
 					try {
 						new URL(value);
 					} catch {
