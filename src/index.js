@@ -65,15 +65,22 @@ function is_cancel(value) {
  * @returns {boolean} Whether we can run non-interactively
  */
 function can_run_non_interactive(argv) {
-	if (!argv.name || !argv.type || !argv.scope || !argv.clients) {
+	if (!argv.name || !argv.scope || !argv.clients) {
 		return false;
 	}
 
-	if (argv.type === 'stdio' && !argv.command) {
+	// Type can be explicitly provided or inferred from command/url
+	const effective_type = argv.type || (argv.command ? 'stdio' : argv.url ? 'http' : undefined);
+
+	if (!effective_type) {
 		return false;
 	}
 
-	if ((argv.type === 'http' || argv.type === 'sse') && !argv.url) {
+	if (effective_type === 'stdio' && !argv.command) {
+		return false;
+	}
+
+	if ((effective_type === 'http' || effective_type === 'sse') && !argv.url) {
 		return false;
 	}
 
@@ -163,23 +170,34 @@ async function main() {
 		name = name_input;
 	}
 
-	// Server type
+	// Server type - auto-detect from command/url if not explicitly provided
 	/** @type {'stdio' | 'http' | 'sse' | undefined} */
 	let type = /** @type {'stdio' | 'http' | 'sse' | undefined} */ (argv.type);
 	if (!type) {
-		const type_input = await clack.select({
-			message: 'What type of server is this?',
-			options: [
-				{ value: 'stdio', label: 'stdio', hint: 'Runs a local command' },
-				{ value: 'http', label: 'HTTP', hint: 'Connects to a URL via HTTP' },
-				{ value: 'sse', label: 'SSE', hint: 'Connects to a URL via Server-Sent Events' },
-			],
-		});
-		if (is_cancel(type_input)) {
-			clack.cancel('Operation cancelled');
-			process.exit(0);
+		// Auto-select type based on provided parameters
+		if (argv.command) {
+			type = 'stdio';
+		} else if (argv.url) {
+			type = 'http';
+		} else {
+			const type_input = await clack.select({
+				message: 'What type of server is this?',
+				options: [
+					{ value: 'stdio', label: 'stdio', hint: 'Runs a local command' },
+					{ value: 'http', label: 'HTTP', hint: 'Connects to a URL via HTTP' },
+					{
+						value: 'sse',
+						label: 'SSE',
+						hint: 'Connects to a URL via Server-Sent Events',
+					},
+				],
+			});
+			if (is_cancel(type_input)) {
+				clack.cancel('Operation cancelled');
+				process.exit(0);
+			}
+			type = type_input;
 		}
-		type = type_input;
 	}
 
 	// Type-specific configuration
