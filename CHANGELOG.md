@@ -1,5 +1,11 @@
 # mcp-add
 
+## 0.2.2
+
+### Patch Changes
+
+- 2f2f94a: feat: infer type from command/url param
+
 ## 0.2.1
 
 ### Patch Changes
