@@ -83,6 +83,8 @@ mcp-add -n my-server
 
 This is useful when you want to quickly specify known values but interactively choose from options like client selection.
 
+Adding a `-c` or `-u` will automatically infer the type.
+
 ### Non-Interactive Mode
 
 Provide all required arguments via command line flags for fully automated usage:
