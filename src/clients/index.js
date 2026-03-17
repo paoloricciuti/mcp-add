@@ -31,6 +31,12 @@ export const clients = {
 };
 
 /**
+ * Clients that support configuring static OAuth credentials for remote servers
+ * @type {string[]}
+ */
+export const clients_supporting_static_oauth = ['claude code', 'cursor'];
+
+/**
  * List of available client names for display
  * @type {string[]}
  */

@@ -58,6 +58,17 @@ function transform_config(config) {
 		if (config.headers && Object.keys(config.headers).length > 0) {
 			result.headers = config.headers;
 		}
+		if (config.client_id || config.client_secret) {
+			/** @type {Record<string, unknown>} */
+			const auth = {};
+			if (config.client_id) {
+				auth.CLIENT_ID = config.client_id;
+			}
+			if (config.client_secret) {
+				auth.CLIENT_SECRET = config.client_secret;
+			}
+			result.auth = auth;
+		}
 		return result;
 	}
 }

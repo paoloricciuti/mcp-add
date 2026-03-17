@@ -5,7 +5,7 @@
 import * as clack from '@clack/prompts';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { clients, client_names } from './clients/index.js';
+import { clients, client_names, clients_supporting_static_oauth } from './clients/index.js';
 
 /**
  * Parses a comma-separated string into an array of trimmed strings
@@ -51,6 +51,82 @@ function parse_key_value_pairs(value) {
  */
 function is_cancel(value) {
 	return clack.isCancel(value);
+}
+
+/**
+ * Returns whether a client supports static OAuth credentials
+ * @param {string} client_name - The client name to check
+ * @returns {boolean} Whether the client supports static OAuth credentials
+ */
+function supports_static_oauth(client_name) {
+	return clients_supporting_static_oauth.includes(client_name.toLowerCase());
+}
+
+/**
+ * Prints a warning message in interactive or non-interactive mode
+ * @param {boolean} is_interactive - Whether the CLI is running interactively
+ * @param {string} message - Warning message to print
+ * @returns {void}
+ */
+function print_warning(is_interactive, message) {
+	if (is_interactive) {
+		clack.note(message, 'Warning');
+	} else {
+		console.warn(`Warning: ${message}`);
+	}
+}
+
+/**
+ * Warns when a static OAuth flag is provided for clients that will not use it
+ * @param {object} options - Warning options
+ * @param {'client-id' | 'client-secret'} options.flag_name - The flag name
+ * @param {string | undefined} options.flag_value - The provided flag value
+ * @param {'stdio' | 'http' | 'sse'} options.type - The server type
+ * @param {string[]} options.selected_clients - The selected clients
+ * @param {boolean} options.is_interactive - Whether the CLI is running interactively
+ * @returns {void}
+ */
+function warn_unused_static_oauth_flag({
+	flag_name,
+	flag_value,
+	type,
+	selected_clients,
+	is_interactive,
+}) {
+	if (!flag_value) {
+		return;
+	}
+
+	if (type === 'stdio') {
+		print_warning(
+			is_interactive,
+			`--${flag_name} is only used for remote servers and will be ignored for stdio configurations.`,
+		);
+		return;
+	}
+
+	const ignored_clients = selected_clients.filter(
+		(client_name) => !supports_static_oauth(client_name),
+	);
+	if (ignored_clients.length === 0) {
+		return;
+	}
+
+	const supported_clients = selected_clients.filter((client_name) =>
+		supports_static_oauth(client_name),
+	);
+	if (supported_clients.length === 0) {
+		print_warning(
+			is_interactive,
+			`--${flag_name} was provided, but none of the selected clients support it: ${selected_clients.join(', ')}.`,
+		);
+		return;
+	}
+
+	print_warning(
+		is_interactive,
+		`--${flag_name} will be ignored by: ${ignored_clients.join(', ')}.`,
+	);
 }
 
 /**
@@ -127,6 +203,16 @@ async function main() {
 			type: 'string',
 			description: 'Comma-separated Key=value headers (http servers only)',
 		})
+		.option('client-id', {
+			type: 'string',
+			description:
+				'Static OAuth client ID for remote servers that do not support dynamic client registration',
+		})
+		.option('client-secret', {
+			type: 'string',
+			description:
+				'Static OAuth client secret for remote servers that do not support dynamic client registration',
+		})
 		.option('scope', {
 			alias: 's',
 			type: 'string',
@@ -143,6 +229,9 @@ async function main() {
 		.version()
 		.alias('version', 'v')
 		.parse();
+
+	const provided_client_id = argv.clientId?.trim() || undefined;
+	const provided_client_secret = argv.clientSecret?.trim() || undefined;
 
 	const is_interactive = !can_run_non_interactive(argv);
 
@@ -211,6 +300,10 @@ async function main() {
 	let url;
 	/** @type {Record<string, string>} */
 	let headers = {};
+	/** @type {string | undefined} */
+	let client_id = provided_client_id;
+	/** @type {string | undefined} */
+	let client_secret = provided_client_secret;
 
 	if (type === 'stdio') {
 		// Command (full command string with arguments)
@@ -333,6 +426,64 @@ async function main() {
 		selected_clients = /** @type {string[]} */ (clients_input);
 	}
 
+	warn_unused_static_oauth_flag({
+		flag_name: 'client-id',
+		flag_value: provided_client_id,
+		type,
+		selected_clients,
+		is_interactive,
+	});
+
+	warn_unused_static_oauth_flag({
+		flag_name: 'client-secret',
+		flag_value: provided_client_secret,
+		type,
+		selected_clients,
+		is_interactive,
+	});
+
+	const static_oauth_clients =
+		type === 'stdio'
+			? []
+			: selected_clients.filter((client_name) => supports_static_oauth(client_name));
+
+	if (static_oauth_clients.length > 0 && provided_client_id === undefined && is_interactive) {
+		const client_id_input = await clack.text({
+			message:
+				static_oauth_clients.length === 1
+					? `${static_oauth_clients[0]} OAuth client ID? (leave empty if not needed)`
+					: `OAuth client ID for ${static_oauth_clients.join(', ')}? (leave empty if not needed)`,
+			placeholder: 'your-client-id',
+			defaultValue: '',
+		});
+		if (is_cancel(client_id_input)) {
+			clack.cancel('Operation cancelled');
+			process.exit(0);
+		}
+		client_id = client_id_input.trim() || undefined;
+	}
+
+	if (
+		static_oauth_clients.length > 0 &&
+		provided_client_secret === undefined &&
+		client_id !== undefined &&
+		is_interactive
+	) {
+		const client_secret_input = await clack.text({
+			message:
+				static_oauth_clients.length === 1
+					? `${static_oauth_clients[0]} OAuth client secret? (leave empty if not needed)`
+					: `OAuth client secret for ${static_oauth_clients.join(', ')}? (leave empty if not needed)`,
+			placeholder: 'your-client-secret',
+			defaultValue: '',
+		});
+		if (is_cancel(client_secret_input)) {
+			clack.cancel('Operation cancelled');
+			process.exit(0);
+		}
+		client_secret = client_secret_input.trim() || undefined;
+	}
+
 	// Build the configuration object
 	/** @type {MCPServerConfig} */
 	const config =
@@ -349,6 +500,8 @@ async function main() {
 					type,
 					url: /** @type {string} */ (url),
 					headers,
+					client_id,
+					client_secret,
 				};
 
 	const is_global = scope === 'global';

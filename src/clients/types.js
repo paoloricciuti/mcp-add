@@ -13,6 +13,8 @@
  * @property {'http' | 'sse'} type - Server type (http or sse)
  * @property {string} url - Server URL
  * @property {Record<string, string>} [headers] - HTTP headers
+ * @property {string} [client_id] - Static OAuth client ID for clients that need it
+ * @property {string} [client_secret] - Static OAuth client secret for clients that need it
  */
 
 /**
