@@ -463,7 +463,12 @@ async function main() {
 		client_id = client_id_input.trim() || undefined;
 	}
 
-	if (static_oauth_clients.length > 0 && provided_client_secret === undefined && is_interactive) {
+	if (
+		static_oauth_clients.length > 0 &&
+		provided_client_secret === undefined &&
+		client_id !== undefined &&
+		is_interactive
+	) {
 		const client_secret_input = await clack.text({
 			message:
 				static_oauth_clients.length === 1
