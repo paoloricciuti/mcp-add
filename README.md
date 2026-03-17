@@ -61,7 +61,7 @@ You'll be prompted for:
 4. Environment variables or headers
 5. Configuration scope (global or project)
 6. Which clients to configure
-7. OAuth client ID when a selected remote client needs static registration
+7. OAuth client credentials when a selected remote client needs static registration
 
 ### Semi-Interactive Mode
 
@@ -105,6 +105,7 @@ mcp-add \
   --type http \
   --url "https://mcp.example.com/mcp" \
   --client-id "your-static-client-id" \
+  --client-secret "your-static-client-secret" \
   --headers "Authorization=Bearer token123" \
   --scope project \
   --clients "claude code,cursor"
@@ -117,21 +118,22 @@ Required flags for non-interactive mode:
 
 ### Command Line Options
 
-| Option        | Alias | Description                                         |
-| ------------- | ----- | --------------------------------------------------- |
-| `--name`      | `-n`  | Server name (alphanumeric, hyphens, underscores)    |
-| `--type`      | `-t`  | Server type: `stdio`, `http`, or `sse`              |
-| `--command`   | `-c`  | Full command to run (`stdio` servers only)          |
-| `--env`       | `-e`  | Environment variables as `KEY=value,KEY2=value2`    |
-| `--url`       | `-u`  | Server URL (remote servers only)                    |
-| `--headers`   | `-H`  | HTTP headers as `Key=value,Key2=value2`             |
-| `--client-id` | -     | Static OAuth client ID for supported remote clients |
-| `--scope`     | `-s`  | Config scope: `global` or `project`                 |
-| `--clients`   | `-C`  | Comma-separated list of clients                     |
-| `--help`      | `-h`  | Show help                                           |
-| `--version`   | `-v`  | Show version                                        |
+| Option            | Alias | Description                                             |
+| ----------------- | ----- | ------------------------------------------------------- |
+| `--name`          | `-n`  | Server name (alphanumeric, hyphens, underscores)        |
+| `--type`          | `-t`  | Server type: `stdio`, `http`, or `sse`                  |
+| `--command`       | `-c`  | Full command to run (`stdio` servers only)              |
+| `--env`           | `-e`  | Environment variables as `KEY=value,KEY2=value2`        |
+| `--url`           | `-u`  | Server URL (remote servers only)                        |
+| `--headers`       | `-H`  | HTTP headers as `Key=value,Key2=value2`                 |
+| `--client-id`     | -     | Static OAuth client ID for supported remote clients     |
+| `--client-secret` | -     | Static OAuth client secret for supported remote clients |
+| `--scope`         | `-s`  | Config scope: `global` or `project`                     |
+| `--clients`       | `-C`  | Comma-separated list of clients                         |
+| `--help`          | `-h`  | Show help                                               |
+| `--version`       | `-v`  | Show version                                            |
 
-`--client-id` is currently applied only to remote `claude code` and `cursor` configurations.
+`--client-id` and `--client-secret` are currently applied only to remote `claude code` and `cursor` configurations.
 
 ## Examples
 
@@ -166,6 +168,7 @@ mcp-add \
   --type http \
   --url "https://api.example.com/mcp" \
   --client-id "cdf3737dff9d485485968e50b63fd8b4" \
+  --client-secret "super-secret-value" \
   --headers "Authorization=Bearer secret,X-Custom-Header=value" \
   --scope project \
   --clients "claude code,cursor"
