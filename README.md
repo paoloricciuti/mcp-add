@@ -56,11 +56,12 @@ mcp-add
 You'll be prompted for:
 
 1. Server name
-2. Server type (local or remote)
-3. Command (for local) or URL (for remote)
+2. Server type (`stdio`, `http`, or `sse`)
+3. Command (for `stdio`) or URL (for remote)
 4. Environment variables or headers
 5. Configuration scope (global or project)
 6. Which clients to configure
+7. OAuth client ID when a selected remote client needs static registration
 
 ### Semi-Interactive Mode
 
@@ -68,12 +69,12 @@ Provide some arguments via command line and let the tool prompt for the rest:
 
 ```bash
 # Provide name and type, prompt for the rest
-mcp-add --name my-server --type local
+mcp-add --name my-server --type stdio
 
 # Provide everything except clients selection
 mcp-add \
   --name filesystem \
-  --type local \
+  --type stdio \
   --command "npx -y @modelcontextprotocol/server-filesystem /tmp" \
   --scope global
 
@@ -93,7 +94,7 @@ Provide all required arguments via command line flags for fully automated usage:
 # Local server example
 mcp-add \
   --name my-server \
-  --type local \
+  --type stdio \
   --command "npx -y @modelcontextprotocol/server-filesystem /tmp" \
   --scope global \
   --clients "claude,cursor,vscode"
@@ -101,32 +102,36 @@ mcp-add \
 # Remote server example
 mcp-add \
   --name my-remote-server \
-  --type remote \
-  --url "https://mcp.example.com/sse" \
+  --type http \
+  --url "https://mcp.example.com/mcp" \
+  --client-id "your-static-client-id" \
   --headers "Authorization=Bearer token123" \
   --scope project \
-  --clients "claude code,opencode"
+  --clients "claude code,cursor"
 ```
 
 Required flags for non-interactive mode:
 
 - `--name`, `--type`, `--scope`, `--clients`
-- `--command` (for local servers) or `--url` (for remote servers)
+- `--command` (for `stdio` servers) or `--url` (for remote servers)
 
 ### Command Line Options
 
-| Option      | Alias | Description                                      |
-| ----------- | ----- | ------------------------------------------------ |
-| `--name`    | `-n`  | Server name (alphanumeric, hyphens, underscores) |
-| `--type`    | `-t`  | Server type: `local` or `remote`                 |
-| `--command` | `-c`  | Full command to run (local servers only)         |
-| `--env`     | `-e`  | Environment variables as `KEY=value,KEY2=value2` |
-| `--url`     | `-u`  | Server URL (remote servers only)                 |
-| `--headers` | `-H`  | HTTP headers as `Key=value,Key2=value2`          |
-| `--scope`   | `-s`  | Config scope: `global` or `project`              |
-| `--clients` | `-C`  | Comma-separated list of clients                  |
-| `--help`    | `-h`  | Show help                                        |
-| `--version` | `-v`  | Show version                                     |
+| Option        | Alias | Description                                         |
+| ------------- | ----- | --------------------------------------------------- |
+| `--name`      | `-n`  | Server name (alphanumeric, hyphens, underscores)    |
+| `--type`      | `-t`  | Server type: `stdio`, `http`, or `sse`              |
+| `--command`   | `-c`  | Full command to run (`stdio` servers only)          |
+| `--env`       | `-e`  | Environment variables as `KEY=value,KEY2=value2`    |
+| `--url`       | `-u`  | Server URL (remote servers only)                    |
+| `--headers`   | `-H`  | HTTP headers as `Key=value,Key2=value2`             |
+| `--client-id` | -     | Static OAuth client ID for supported remote clients |
+| `--scope`     | `-s`  | Config scope: `global` or `project`                 |
+| `--clients`   | `-C`  | Comma-separated list of clients                     |
+| `--help`      | `-h`  | Show help                                           |
+| `--version`   | `-v`  | Show version                                        |
+
+`--client-id` is currently applied only to remote `claude code` and `cursor` configurations.
 
 ## Examples
 
@@ -135,7 +140,7 @@ Required flags for non-interactive mode:
 ```bash
 mcp-add \
   --name filesystem \
-  --type local \
+  --type stdio \
   --command "npx -y @modelcontextprotocol/server-filesystem /home/user/documents" \
   --scope global \
   --clients claude
@@ -146,7 +151,7 @@ mcp-add \
 ```bash
 mcp-add \
   --name github \
-  --type local \
+  --type stdio \
   --command "npx -y @modelcontextprotocol/server-github" \
   --env "GITHUB_TOKEN=ghp_xxxxxxxxxxxx" \
   --scope global \
@@ -158,11 +163,12 @@ mcp-add \
 ```bash
 mcp-add \
   --name my-api \
-  --type remote \
+  --type http \
   --url "https://api.example.com/mcp" \
+  --client-id "cdf3737dff9d485485968e50b63fd8b4" \
   --headers "Authorization=Bearer secret,X-Custom-Header=value" \
   --scope project \
-  --clients "vscode,cursor"
+  --clients "claude code,cursor"
 ```
 
 ### Configure multiple clients at once
@@ -170,7 +176,7 @@ mcp-add \
 ```bash
 mcp-add \
   --name memory \
-  --type local \
+  --type stdio \
   --command "npx -y @modelcontextprotocol/server-memory" \
   --scope global \
   --clients "claude,claude code,cursor,windsurf,vscode,opencode"

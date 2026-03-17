@@ -63,6 +63,11 @@ function transform_config(config) {
 		if (config.headers && Object.keys(config.headers).length > 0) {
 			result.headers = config.headers;
 		}
+		if (config.client_id) {
+			result.oauth = {
+				clientId: config.client_id,
+			};
+		}
 		return result;
 	}
 }
