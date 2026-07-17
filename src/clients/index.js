@@ -1,5 +1,6 @@
 /** @import { MCPServerConfig, AddOptions, AddResult, ClientAddFunction } from './types.js' */
 
+import { add_to_antigravity } from './antigravity.js';
 import { add_to_claude } from './claude.js';
 import { add_to_claude_code } from './claude_code.js';
 import { add_to_copilot_cli } from './copilot_cli.js';
@@ -17,6 +18,7 @@ import { add_to_gemini } from './gemini.js';
  * @type {Record<string, ClientAddFunction>}
  */
 export const clients = {
+	antigravity: add_to_antigravity,
 	'claude desktop': add_to_claude,
 	'claude code': add_to_claude_code,
 	'copilot cli': add_to_copilot_cli,
