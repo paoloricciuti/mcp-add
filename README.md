@@ -11,18 +11,19 @@ A CLI tool to easily add [Model Context Protocol (MCP)](https://modelcontextprot
 
 ## Supported Clients
 
-| Client         | Global Config                                                             | Project Config          |
-| -------------- | ------------------------------------------------------------------------- | ----------------------- |
-| Claude Desktop | `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) | -                       |
-| Claude Code    | `~/.claude.json`                                                          | `.mcp.json`             |
-| Cursor         | `~/.cursor/mcp.json`                                                      | `.cursor/mcp.json`      |
-| Windsurf       | `~/.codeium/windsurf/mcp_config.json`                                     | `.windsurf/mcp.json`    |
-| VS Code        | `~/.vscode/mcp.json`                                                      | `.vscode/mcp.json`      |
-| OpenCode       | `~/.config/opencode/opencode.json`                                        | `opencode.json`         |
-| Continue       | `~/.continue/config.yaml`                                                 | `.continue/config.yaml` |
-| Goose          | `~/.config/goose/config.yaml`                                             | -                       |
-| Codex          | `~/.codex/config.yaml`                                                    | -                       |
-| Gemini CLI     | `~/.gemini/settings.json`                                                 | `.gemini/settings.json` |
+| Client         | Global Config                                                             | Project Config             |
+| -------------- | ------------------------------------------------------------------------- | -------------------------- |
+| Antigravity    | `~/.gemini/config/mcp_config.json`                                        | `.agents/mcp_config.json`  |
+| Claude Desktop | `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) | -                          |
+| Claude Code    | `~/.claude.json`                                                          | `.mcp.json`                |
+| Cursor         | `~/.cursor/mcp.json`                                                      | `.cursor/mcp.json`         |
+| Windsurf       | `~/.codeium/windsurf/mcp_config.json`                                     | `.windsurf/mcp.json`       |
+| VS Code        | `~/.vscode/mcp.json`                                                      | `.vscode/mcp.json`         |
+| OpenCode       | `~/.config/opencode/opencode.json`                                        | `opencode.json`            |
+| Continue       | `~/.continue/config.yaml`                                                 | `.continue/config.yaml`    |
+| Goose          | `~/.config/goose/config.yaml`                                             | -                          |
+| Codex          | `~/.codex/config.yaml`                                                    | -                          |
+| Gemini CLI     | `~/.gemini/settings.json`                                                 | `.gemini/settings.json`    |
 
 ## Installation
 

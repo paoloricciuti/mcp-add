@@ -1,6 +1,6 @@
 ---
 name: mcp-add
-description: Add MCP (Model Context Protocol) servers to AI coding clients using npx. Use when the user wants to configure, add, or set up an MCP server for Claude Code, Claude Desktop, Cursor, VS Code, Windsurf, Continue, Goose, Codex, OpenCode, Gemini CLI, or Copilot CLI.
+description: Add MCP (Model Context Protocol) servers to AI coding clients using npx. Use when the user wants to configure, add, or set up an MCP server for Antigravity, Claude Code, Claude Desktop, Cursor, VS Code, Windsurf, Continue, Goose, Codex, OpenCode, Gemini CLI, or Copilot CLI.
 ---
 
 # mcp-add
@@ -31,7 +31,7 @@ Run without flags for interactive mode, or provide all required flags for non-in
 
 ## Supported Clients
 
-`claude desktop` `claude code` `copilot cli` `cursor` `continue` `windsurf` `opencode` `vscode` `goose` `codex` `gemini`
+`antigravity` `claude desktop` `claude code` `copilot cli` `cursor` `continue` `windsurf` `opencode` `vscode` `goose` `codex` `gemini`
 
 **Note:** Client names with spaces must be quoted: `--clients "claude code"`
 
