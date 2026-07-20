@@ -6,12 +6,17 @@ import * as os from 'node:os';
 import * as TOML from 'smol-toml';
 
 /**
- * Gets the Codex CLI config file path
- * Codex uses ~/.codex/config.toml
+ * Gets the Codex CLI config file path based on scope
+ * - Global scope: ~/.codex/config.toml
+ * - Project scope: .codex/config.toml in the current directory
+ * @param {boolean} is_global - Whether to use global config
  * @returns {string} The config file path
  */
-function get_config_path() {
-	return path.join(os.homedir(), '.codex', 'config.toml');
+function get_config_path(is_global) {
+	if (is_global) {
+		return path.join(os.homedir(), '.codex', 'config.toml');
+	}
+	return path.join(process.cwd(), '.codex', 'config.toml');
 }
 
 /**
@@ -62,18 +67,16 @@ function transform_config(config) {
 /**
  * Adds an MCP server configuration to Codex CLI
  * @param {MCPServerConfig} config - The server configuration
- * @param {AddOptions} _options - Additional options
+ * @param {AddOptions} options - Additional options
  * @returns {Promise<AddResult>} Result of the operation
  */
-export async function add_to_codex(config, _options) {
-	const config_path = get_config_path();
+export async function add_to_codex(config, options) {
+	const config_path = get_config_path(options.is_global);
 
 	try {
-		// Ensure directory exists
+		// Ensure the config directory exists for either scope.
 		const dir = path.dirname(config_path);
-		if (!fs.existsSync(dir)) {
-			fs.mkdirSync(dir, { recursive: true });
-		}
+		if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
 		// Read existing config
 		const existing_config = read_config(config_path);

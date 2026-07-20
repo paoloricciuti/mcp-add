@@ -21,7 +21,7 @@ A CLI tool to easily add [Model Context Protocol (MCP)](https://modelcontextprot
 | OpenCode       | `~/.config/opencode/opencode.json`                                        | `opencode.json`         |
 | Continue       | `~/.continue/config.yaml`                                                 | `.continue/config.yaml` |
 | Goose          | `~/.config/goose/config.yaml`                                             | -                       |
-| Codex          | `~/.codex/config.yaml`                                                    | -                       |
+| Codex          | `~/.codex/config.toml`                                                    | `.codex/config.toml`   |
 | Gemini CLI     | `~/.gemini/settings.json`                                                 | `.gemini/settings.json` |
 
 ## Installation
