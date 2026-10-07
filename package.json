@@ -23,10 +23,12 @@
 		"cli",
 		"claude",
 		"claude-code",
+		"codewhale",
 		"cursor",
 		"windsurf",
 		"opencode",
-		"continue"
+		"continue",
+		"dsh"
 	],
 	"author": "Paolo Ricciuti",
 	"license": "MIT",

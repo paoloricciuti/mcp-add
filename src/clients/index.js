@@ -11,6 +11,8 @@ import { add_to_vscode } from './vscode.js';
 import { add_to_goose } from './goose.js';
 import { add_to_codex } from './codex.js';
 import { add_to_gemini } from './gemini.js';
+import { add_to_codewhale } from './codewhale.js';
+import { add_to_dsh } from './dsh.js';
 
 /**
  * Map of client names to their add functions
@@ -28,6 +30,8 @@ export const clients = {
 	goose: add_to_goose,
 	codex: add_to_codex,
 	gemini: add_to_gemini,
+	codewhale: add_to_codewhale,
+	dsh: add_to_dsh,
 };
 
 /**
